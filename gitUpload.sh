@@ -62,6 +62,7 @@ upload(){
 	git init
 	add
 	commit
+	git remote add origin https://github.com/Rupeshdevasam/Music-player.git
 	pull
 	push
 
