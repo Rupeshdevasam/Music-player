@@ -2,10 +2,10 @@
       <div class="container">
         <ul>
          <router-link tag="li" exact to='/'>
-          <a>Home</a>
+          <a style="color:black">Home</a>
         </router-link>
         <router-link tag="li" to='/create'>
-          <a>Login</a>
+          <a style="color:black">Login</a>
         </router-link>
         </ul>
       </div>

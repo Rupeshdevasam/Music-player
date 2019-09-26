@@ -25,6 +25,7 @@ getMessage(){
 }
 
 add(){
+echo "adding!!!!!!!!!!!!!!!!!!!\n\n"
 
 git add .
 
@@ -34,6 +35,7 @@ echo 'Adding done....\n\n'
 
 
 commit(){
+	echo "commiting!!!!!!!!!!!!!!!!!!!!\n\n"
 	
 	getMessage message
 
@@ -44,6 +46,7 @@ commit(){
 }
 
 pull(){
+	echo 'Pulling !!!!!!!!!!!!!!!!!\n\n'
 
 	git pull origin master
 
@@ -52,6 +55,7 @@ pull(){
 
 
 push(){
+	echo "pushing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n"
 
 	git push origin master
 	
@@ -60,9 +64,10 @@ push(){
 
 upload(){
 	git init
+	git remote add origin https://github.com/Rupeshdevasam/Music-player-V1.git
 	add
 	commit
-	git remote add origin https://github.com/Rupeshdevasam/Music-player.git
+	#git remote add origin https://github.com/Rupeshdevasam/Music-player-V1.git
 	pull
 	push
 

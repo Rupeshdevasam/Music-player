@@ -9,7 +9,7 @@ var v=new Vue({
 	
 
 	data:{
-		count:0,
+
 	},
 	/**
 	 * Binded Element(ID) 

@@ -30,7 +30,7 @@ body {
 
       <div id="root">
         @include('header')
-        <div class="container box" style="max-height: 1000px;overflow-y: scroll;background: white;border: 5px inline red">
+        <div class="container box" style="max-height: 1000px;overflow-y: scroll;background: #FFF0F5;border: 5px inline red">
         <section class="section">
           <div class="container">
             <router-view></router-view>    

@@ -1,94 +1,105 @@
 <template>
+	
+	<div :id="count" class="box" :class="{'actives':active,'normal':!active}" @click="selected" >
+	  
+		  <article class="media">
 
-	<div :id="count" class="container box" :class="{'selected':active,'normal':!active}" @click="selected">
-		<p class="name">
-			{{count}}
-		</p>
-		<p>
-			<marquee>This is a song named {{name}}</marquee>
-		</p>
-			<div style="display:inline-block;padding-left:5%;" v-if="active" >
-				
-			<button type="button" class="fa fa-backward" ></button>
-			
-			<button type="button" class="fa" :class="{'fa-play':isPlaying,'fa-pause':!isPlaying}" @click="toggle" aria-label="Left Align" ></button>
-			<button type="button" class="fa fa-forward" ></button>
-			
-			</div>
-		
+		    <div class="media-content" style="display:inline">
+		    
+		      <div class="content">
+		    
+		    		<strong class="index">{{count}}</strong>
+		    
+		        <p style="float:left;">
+		    
+		          <strong>
+		    
+		          	<div>
+		    
+		          		{{song}}
+		    
+		          	</div>
+		    
+		           </strong>
+		    
+		          <br>
+		    
+		        </p>
+		    
+		        <p style="float:right">
+		    
+		        	
+		    
+		        </p>
+		    
+		      </div>
+		     
+		    </div>
+		  
+		  </article>
+	  
 	</div>
 
 </template>
 
 <script>
+
+	import Songs from './Songs.js';
+
+
 	export default{
+		props:['src'],
+
 		data(){
+
 			return{
-				count:this.$parent.$data.count++,
+
+				count:++this.$parent.$data.count,
+
 				active:false,
-				name:"temp",
-				time:"2:00",
-				isPlaying:false
+
+				time:'',
+
+				song:'',
+
 			};
+
 		},
 		methods:{
+	
 			selected()
+
 			{
-				this.$parent.$data.prev.active=false;
+
+				if( this === this.$parent.$data.old )
+					return;
+
 				this.active=true;
-				this.$parent.$data.prev=this;
 			
-				
+				this.$emit('songSelected',this.count-1);
+
+				this.$parent.$data.old.active = false;
+
+				this.$parent.$data.old=this;	
+
 			},
-			toggle()
-			{
-				//alert('hiii');
-				this.isPlaying=!this.isPlaying;
-				//alert(this.isPlaying);
+			reset(){
+				this.active=false;
 			}
 		},
+
+		created(){
+
+			this.song=this.$parent.$data.songs[this.count-1];
+		
+		}
 
 	};
 </script>
 
 <style>
-	button{
+	@import './song.css';
 
-	}
-	p{
-		display:inline-block;
-		padding-left: 10%;
-	}
-	.name{
-		display:inline-block;
-		padding-left: 1%;
-	}
-	.normal{
-		height: 40px;
-		padding: 1%;
-		background: #F0FFF0;
-		color:black;
-		margin-bottom: 10px;
-	}
-	.normal > figure{
-		padding-left: 1.5%;
-		overflow: hidden;
-		position: absolute;
 
-		top:0%;
-	}
-	.active{
-		height: 500px;
-		background: lightgreen;
-	}
-	.normal:hover{
-		background: red;
-	}
-	.button.play {
-  width: 10px;
-  height: 10px;
-  border-style: solid;
-  border-width: 10px 0px 10px 40px;
-  border-color: transparent transparent transparent #202020;
-}
+
 </style>
