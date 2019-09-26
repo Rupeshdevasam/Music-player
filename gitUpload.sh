@@ -55,7 +55,7 @@ pull(){
 
 
 push(){
-	echo "pushing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n"
+	echo "pushing!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n"
 
 	git push origin master
 	
@@ -64,10 +64,10 @@ push(){
 
 upload(){
 	git init
-	git remote add origin https://github.com/Rupeshdevasam/Music-player-V1.git
+	#git remote add origin https://github.com/Rupeshdevasam/Music-player-V1.git
 	add
 	commit
-	#git remote add origin https://github.com/Rupeshdevasam/Music-player-V1.git
+	git remote add origin https://github.com/Rupeshdevasam/Music-player.git
 	pull
 	push
 
