@@ -9,7 +9,7 @@ var v=new Vue({
 	
 
 	data:{
-
+		playing:false
 	},
 	/**
 	 * Binded Element(ID) 

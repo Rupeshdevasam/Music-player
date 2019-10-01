@@ -5,7 +5,7 @@
           <a style="color:black">Home</a>
         </router-link>
         <router-link tag="li" to='/create'>
-          <a style="color:black">Login</a>
+          <a style="color:white">Login</a>
         </router-link>
         </ul>
       </div>

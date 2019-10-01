@@ -3,14 +3,19 @@
 		padding: 1%;
 		background: #FDF5E6;
 		color:black;
-		margin-bottom: 10px;
+		
 	}
 	.actives{
 		height: 40px;
 		padding: 1%;
-		background: lightgreen;
-		color:black;
+		color:white;
+		background: #9f6934;
+		
 		margin-bottom: 10px;
+	}
+	.fontWhite
+	{
+		color:white;
 	}
 	.index{
 		float:left;

@@ -8,17 +8,17 @@
 		    
 		      <div class="content">
 		    
-		    		<strong class="index">{{count}}</strong>
+		    		<strong  :class="{'fontWhite':active}" class="index">{{count}}</strong>
 		    
 		        <p style="float:left;">
 		    
-		          <strong>
+		          <strong :class="{'fontWhite':active}">
 		    
-		          	<div>
+		          
 		    
 		          		{{song}}
 		    
-		          	</div>
+		          
 		    
 		           </strong>
 		    

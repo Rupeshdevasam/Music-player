@@ -1,8 +1,9 @@
 <template>
 	
-	<div class="container" >
+	<div class="container">
 		<div class="columns">
-			<div class="column" style="display: -webkit-flex;display: grid ">
+			<div class="column">
+				
 				<player></player>
 				
 				
@@ -24,7 +25,7 @@
 		{
 			return{
 				count:1,
-				songs:["Adhento Gaani Vunnapaatuga - SenSongsmp3.Co","Kirraku - SenSongsmp3.Co","03 - Zindabad Zindabad"]
+				songs:["Adhento Gaani Vunnapaatuga - SenSongsmp3.Co","Kirraku - SenSongsmp3.Co","03 - Zindabad Zindabad","Apudo Ipudo-SenSongsMp3.Co"]
 			}
 		},
 		methods:{
