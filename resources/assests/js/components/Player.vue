@@ -1,11 +1,11 @@
 <template>
-	<div style="position:relative;top:-12%;display:block">
+	<div style="position:relative;top:-12%;display:block;">
 	<div :id="count" class="box selected" :class="{'playing':this.sound.is_playing}" @click="selected" style="background:black;color:white;border:2px solid #9f6934; " v-show="!(index=='NA')">
 	  	
 		  <article class="media">
 		    <div class="media-left">
-		      <figure class="image is-128x128" >
-		        <img style="border:2px solid #9f6934;" src="https://m.media-amazon.com/images/M/MV5BM2ZkZGIwZDAtNGU1ZS00NTlkLThjYjYtMjU5MzQzNDQyMTBmXkEyXkFqcGdeQXVyODA2ODM3NDQ@._V1_QL50_.jpg" alt="Image">
+		      <figure class="image is-128x128">
+		        <img style="border:2px solid #9f6934;height:190px;border-top-left-radius:35px;" :src="image" alt="Image">
 		      </figure> <br><br>
 		      <p>
 		       <a class="button is-rounded fa fa-random" :class="{'is-danger':suffle,'is-dark':!suffle}" style="padding-left:5px;padding-right:5px"  @click="suffleToggle"></a>
@@ -20,7 +20,7 @@
 		      <div class="content">
 		    		<strong style="float:left;color:white">{{numbering}} |<i> {{running_time}}</i></strong>
 
-		        <p style="float:left;width:40%;" class="p_active">
+		        <p style="float:left;" class="p_active">
 		          <strong>
 		          	<marquee style="color:red">
 		          		 {{song}}
@@ -66,6 +66,11 @@
 					</div>
 				
 		      	</p>
+		     	<br>
+		      	<p style="float:left">
+					<strong style="color:red">Album:<span style="color:lightgreen;display:inline-flex;padding:5px;text-decoration:underline"> {{album}}</span> </strong>
+					<strong style="color:red">Director:<span style="color:lightgreen;display:inline-flex;padding:5px;text-decoration:underline"> {{composer}}</span> </strong>
+		      	</p>
 		  	   </div>
 			
 		     
@@ -86,6 +91,7 @@
 	import {Howl, Howler} from 'howler';
 	import Songs from './Songs.js';
 	import Slider from "vue-custom-range-slider";
+	import * as MM from 'music-metadata-browser';
   // import the styling, css or scss
  	import "./vue-custom-range-slider.scss";
  	import "./volume_slider.css";
@@ -125,6 +131,10 @@
         		repeat:true,
         		repeatOne:false,
         		played:[],
+        		image:'',
+        		md:'',
+        		composer:'',
+        		album:''
         		
 	      
 			};
@@ -134,6 +144,30 @@
 				this.sound.seek(value);
 				this.timeRunner();
 			},
+
+			async imageLoader(blob) {
+			 
+			  // blob is a Web API Blob or File
+			  await MM.fetchFromUrl(blob).then(metadata => {
+			  	this.md=metadata.common;
+    	this.image="data:image/jpeg;base64,"+metadata.common.picture[0].data.toString('base64');
+
+    	this.song=this.md.title;
+
+    	this.composer=this.md.composer[0];
+
+    	this.album=this.md.album;
+
+    	console.log(metadata);
+
+
+   }).catch();
+			  // metadata has all the metadata found in the blob or file
+			 
+			}
+
+
+			,
 			suffleToggle()
 			{
 				this.suffle=!this.suffle;
@@ -234,6 +268,8 @@
 				this.song=this.songs[this.index];
 				this.src=this.songs[this.index]+".mp3";
 				this.loadSong();
+				//alert("eui");
+				
 				//this.time=this.sound.duration();
 				try {
 					this.sound.play();
@@ -346,6 +382,7 @@
 						  					
 
 				});
+				this.imageLoader(this.src);
 				//this.songLength=this.sound.duration();
 				this.repeater=setInterval(this.moveSeeker,1000);
 				this.setTimes();	
