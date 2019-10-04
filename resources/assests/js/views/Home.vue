@@ -25,7 +25,7 @@
 		{
 			return{
 				count:1,
-				songs:["Adhento Gaani Vunnapaatuga - SenSongsmp3.Co","Kirraku - SenSongsmp3.Co","03 - Zindabad Zindabad","Apudo Ipudo-SenSongsMp3.Co"]
+				songs:["Adhento Gaani Vunnapaatuga - SenSongsmp3.Co","Kirraku - SenSongsmp3.Co","03 - Zindabad Zindabad","Apudo Ipudo-SenSongsMp3.Co","01 - Padara Padara","03 - Nuvve Samastham","05 - Phir Shuru","07 - Idhe Kadha Nee Katha","08 - Nuvvani Idhi Needani"]
 			}
 		},
 		methods:{

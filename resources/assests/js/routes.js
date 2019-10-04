@@ -9,11 +9,13 @@ let routes=[
 	},
 	{
 		path:"/create",
-		component: require('./views/Create').default
+		component: require('./views/AddSong').default
 	} 
 ];
 
 export default new VueRouter({
+
 		routes,
+
 		'linkActiveClass':'is-active'
 });

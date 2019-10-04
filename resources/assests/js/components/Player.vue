@@ -1,6 +1,6 @@
 <template>
 	<div style="position:relative;top:-12%;display:block;">
-	<div :id="count" class="box selected" :class="{'playing':this.sound.is_playing}" @click="selected" style="background:black;color:white;border:2px solid #9f6934; " v-show="!(index=='NA')">
+	<div :id="count" class="box selected" :class="{'playing':this.sound.is_playing}" @click="selected" style="background:black;color:white;border:2px solid #9f6934;margin-top:5%" v-show="!(index=='NA')">
 	  	
 		  <article class="media">
 		    <div class="media-left">
@@ -68,8 +68,19 @@
 		      	</p>
 		     	<br>
 		      	<p style="float:left">
-					<strong style="color:red">Album:<span style="color:lightgreen;display:inline-flex;padding:5px;text-decoration:underline"> {{album}}</span> </strong>
-					<strong style="color:red">Director:<span style="color:lightgreen;display:inline-flex;padding:5px;text-decoration:underline"> {{composer}}</span> </strong>
+					<strong style="color:red">Album: 
+						<a :href="search(album)" target="_blank">
+							<span style="color:lightgreen;display:inline-flex;padding:5px;text-decoration:underline"> {{album}}</span>
+						</a> 
+					</strong>
+					
+
+					<strong style="color:red">Director: 
+						<a :href="search(composer)" target="_blank">
+							<span style="color:lightgreen;display:inline-flex;padding:5px;text-decoration:underline"> {{composer}}
+							</span>
+						</a> 
+					</strong>
 		      	</p>
 		  	   </div>
 			
@@ -78,10 +89,11 @@
 		  </article>
 	  
 	</div>
-		
-		<div v-for="song in songs">
-			<song @songSelected="songs1" :src="src" ></song>
-			
+		<div class="container scrollbar" id="style-1">
+			<div v-for="song in songs" >
+				<song @songSelected="songs1" :src="src" ></song>
+				
+			</div>
 		</div>
 	</div>
 
@@ -140,9 +152,15 @@
 			};
 		},
 		methods:{
-			changed(value){
+			changed(value) {
 				this.sound.seek(value);
 				this.timeRunner();
+			},
+
+			search(word) {
+
+				return "https://www.google.co.in/search?q="+word;
+
 			},
 
 			async imageLoader(blob) {
@@ -207,6 +225,7 @@
 			{
 				//console.log(this.slider);
 				//this.timeRunner();
+				try{
 				this.$refs["range"].$refs["slider"].value=this.sound.seeks().toString();
 				this.slider=this.sound.seeks().toString();
 				//console.log(this.sound.seeks());
@@ -217,7 +236,13 @@
 				}
 			}
 				this.timeRunner();
+
+			}
+			catch(e)
+			{
+				//this.sound.stop();
 				//console.log(this.slider);
+			}
 				
 
 			},
@@ -411,6 +436,27 @@
 	
 <style> 
 	@import './Player.css';
+	.scrollbar {
+    
+    float: left;
+    height: 250px;
+    
+    margin-left: 22px;
+    margin-top: 40px;
+    width:100%;
+    overflow-y: scroll;
+}
+
+.force-overflow {
+    min-height: 450px;
+}
+#style-1::-webkit-scrollbar {
+    width: 6px;
+    background-color: #000000;
+} 
+#style-1::-webkit-scrollbar-thumb {
+    background-color: red;
+}
 	
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-slider-component@latest/theme/default.css">

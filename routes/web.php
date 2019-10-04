@@ -14,3 +14,13 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('/files/{type}/{id?}', 'FileController@index');
+
+Route::post('files/add', 'FileController@store');
+Route::post('files/edit/{id}', 'FileController@edit');
+Route::post('files/delete/{id}', 'FileController@destroy');
+
+Auth::routes();
+

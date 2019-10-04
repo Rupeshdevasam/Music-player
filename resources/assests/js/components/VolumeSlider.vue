@@ -1,5 +1,5 @@
 <template>
-	<div  style="display:block;position:absolute;top:25%;left:87%;background:black;">
+	<div  style="display:block;position:absolute;top:50%;left:87%;background:black;">
 	  <div class="content">
 	  	<progress class="progress" :class="{'is-primary':volume<0.8,'is-danger':volume>=0.8}" :value="progress" max="100">90%</progress>
 	      <input v-show="false" type="range" style="display:inline" class="volume" :value="volume" min="0" max="1" >
