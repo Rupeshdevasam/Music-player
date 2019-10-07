@@ -16,6 +16,8 @@
 <script>
 	import Song from '../components/Song.vue';
 	import Player from '../components/Player.vue';
+	import Vue from 'vue';
+	
 	export default{
 		components:{
 			Song,
@@ -25,11 +27,36 @@
 		{
 			return{
 				count:1,
-				songs:["Adhento Gaani Vunnapaatuga - SenSongsmp3.Co","Kirraku - SenSongsmp3.Co","03 - Zindabad Zindabad","Apudo Ipudo-SenSongsMp3.Co","01 - Padara Padara","03 - Nuvve Samastham","05 - Phir Shuru","07 - Idhe Kadha Nee Katha","08 - Nuvvani Idhi Needani"]
+				songs:[],
+				places:[],
+				user:'',
 			}
 		},
 		methods:{
-
-		}
+				loadSongs(data)
+				{
+					alert(data);
+					axios.post('/getUser').then(response => {
+						   console.log(response.data);
+						   this.user=response.data;
+						   data.forEach(this.trail); 
+						});
+					
+				},
+				trail(element) {
+						
+						if(element['public']==1 || element['user_id']==this.user){
+						this.songs.push(element['name']);
+						this.places.push(element['place']);
+					}
+						//temp+='/'+element['place']+'/'+element['name']+'.'+element['extension'];
+						//this.songs.push(temp);
+					}
+		},
+		mounted(){
+				axios.post('/all').then(response => {
+					this.loadSongs(response.data);
+					});
+				} 
 	};
 </script>

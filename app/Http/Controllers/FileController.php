@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App;
+use Illuminate\Http\Response;
+
 use App\File;
 
 
@@ -31,7 +33,7 @@ class FileController extends Controller
      * @param  integer $id   File Id
      * @return object        Files list, JSON
      */
-    public function index($type, $id = null)
+    public function index($id = null)
     {
         $model = new File();
 
@@ -40,8 +42,7 @@ class FileController extends Controller
         } else {
             $records_per_page = ($type == 'video') ? 6 : 15;
 
-            $files = $model::where('type', $type)
-                            ->where('user_id', Auth::id())
+            $files = $model::where('user_id', Auth::id())
                             ->orderBy('id', 'desc')->paginate($records_per_page);
 
             $response = [
@@ -59,6 +60,32 @@ class FileController extends Controller
 
         return response()->json($response);
     }
+
+
+
+    public function getAll()
+    {
+    	//return(storage_path());
+    	return File::all();
+    }
+
+    public function getPublic()
+    {
+    	return Storage::files('public/all');
+    }
+
+    public function getSong($folder,$song) {
+	$path = "/public/".$folder."/".$song;
+	//return $path;
+	//
+	//return Storage::url($path);
+	//
+	$file = Storage::get($path);
+	//$filesize = (int) File::size($path);
+	return (new Response($file,200))->header('Content-Type', 'audio/mpeg');
+
+		
+}
 
     /**
      * Upload new file and store it
@@ -80,14 +107,19 @@ class FileController extends Controller
         $ext = $file->getClientOriginalExtension();
         $type = $this->getType($ext);
         $public = $request['public'];
-     
+        $place = "". $this->getUserDir();
 
         if (Storage::putFileAs('/public/' . $this->getUserDir() . '/', $file, $request['name'] . '.' . $ext)) {
+
+        	
         	Storage::putFileAs('/public/' . "all" . '/', $file, $request['name'] . '.' . $ext);
+        	info($place);
             return $model::create([
+            		'place' => $place,
                     'name' => $request['name'],
                     'type' => $type,
                     'public' => $public,
+                    'album' => $request['album'],
                     'extension' => $ext,
                     'user_id' => Auth::id()
 

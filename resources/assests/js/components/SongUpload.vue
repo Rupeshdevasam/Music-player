@@ -6,13 +6,19 @@
     <input class="input" type="file" ref="file" @change="handleFile" placeholder="Text input">
   </div>
 </div>
+<div class="field">
+  <label class="label" style="color:white">Album</label>
+  <div class="control">
+    <input class="input" type="text" :value="album" ref="album" @change="handleChange" placeholder="Text input">
+  </div>
+</div>
 
 
 <div class="field">
 	<label><strong style="color:white">Make it public?</strong></label>
   <div class="control">
     <label class="radio" style="color:white">
-      <input type="radio" v-model="public" name="question" :value=1>
+      <input type="radio" v-model="public" name="question" :value=1 selected>
       Yes
     </label>
     <label class="radio" style="color:white">
@@ -43,12 +49,18 @@ export default{
 	data(){
 		  return {
 		    file: 'ssss',
-		    public:false
+		    public:1,
+		    album:'NULL',
 		  }
 		},
 
 	methods:{
 
+		handleChange()
+		{
+			//alert("message?: DOMString");
+			this.album=this.$refs.album.value;
+		},
 		handleFile()
 		{
 			alert("HII");
@@ -68,6 +80,7 @@ export default{
 
 			formData.append('name',names);
 			formData.append('public',this.public);
+			formData.append('album',this.album);
 			alert("Submitted");
 
 			axios.post( '/files/add',

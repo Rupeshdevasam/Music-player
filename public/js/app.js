@@ -2524,6 +2524,7 @@ __webpack_require__.r(__webpack_exports__);
         is_playing: false
       },
       songs: this.$parent.$data.songs,
+      places: this.$parent.$data.places,
       old: {
         active: ''
       },
@@ -2612,8 +2613,8 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         this.timeRunner();
-      } catch (e) {//this.sound.stop();
-        //console.log(this.slider);
+      } catch (e) {
+        this.sound.stop(); //console.log(this.slider);
       }
     },
 
@@ -2649,7 +2650,7 @@ __webpack_require__.r(__webpack_exports__);
       this.index = count;
       this.numbering = this.index + 1;
       this.song = this.songs[this.index];
-      this.src = this.songs[this.index] + ".mp3";
+      this.src = '/gets/' + this.places[this.index] + '/' + this.songs[this.index] + ".mp3";
       this.loadSong(); //alert("eui");
       //this.time=this.sound.duration();
 
@@ -2892,17 +2893,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 window.axios = axios__WEBPACK_IMPORTED_MODULE_0___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
   data() {
     return {
       file: 'ssss',
-      public: false
+      public: 1,
+      album: 'NULL'
     };
   },
 
   methods: {
+    handleChange() {
+      //alert("message?: DOMString");
+      this.album = this.$refs.album.value;
+    },
+
     handleFile() {
       alert("HII");
       this.file = this.$refs.file.files[0];
@@ -2920,6 +2933,7 @@ window.axios = axios__WEBPACK_IMPORTED_MODULE_0___default.a;
       console.log(names);
       formData.append('name', names);
       formData.append('public', this.public);
+      formData.append('album', this.album);
       alert("Submitted");
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/files/add', formData, {
         headers: {
@@ -3040,6 +3054,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Song_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Song.vue */ "./resources/assests/js/components/Song.vue");
 /* harmony import */ var _components_Player_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Player.vue */ "./resources/assests/js/components/Player.vue");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_2__);
 //
 //
 //
@@ -3055,6 +3071,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3066,11 +3083,39 @@ __webpack_require__.r(__webpack_exports__);
   data() {
     return {
       count: 1,
-      songs: ["Adhento Gaani Vunnapaatuga - SenSongsmp3.Co", "Kirraku - SenSongsmp3.Co", "03 - Zindabad Zindabad", "Apudo Ipudo-SenSongsMp3.Co", "01 - Padara Padara", "03 - Nuvve Samastham", "05 - Phir Shuru", "07 - Idhe Kadha Nee Katha", "08 - Nuvvani Idhi Needani"]
+      songs: [],
+      places: [],
+      user: ''
     };
   },
 
-  methods: {}
+  methods: {
+    loadSongs(data) {
+      alert(data);
+      axios.post('/getUser').then(response => {
+        console.log(response.data);
+        this.user = response.data;
+        data.forEach(this.trail);
+      });
+    },
+
+    trail(element) {
+      if (element['public'] == 1 || element['user_id'] == this.user) {
+        this.songs.push(element['name']);
+        this.places.push(element['place']);
+      } //temp+='/'+element['place']+'/'+element['name']+'.'+element['extension'];
+      //this.songs.push(temp);
+
+    }
+
+  },
+
+  mounted() {
+    axios.post('/all').then(response => {
+      this.loadSongs(response.data);
+    });
+  }
+
 });
 
 /***/ }),
@@ -28295,6 +28340,22 @@ var render = function() {
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "field" }, [
+      _c("label", { staticClass: "label", staticStyle: { color: "white" } }, [
+        _vm._v("Album")
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "control" }, [
+        _c("input", {
+          ref: "album",
+          staticClass: "input",
+          attrs: { type: "text", placeholder: "Text input" },
+          domProps: { value: _vm.album },
+          on: { change: _vm.handleChange }
+        })
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "field" }, [
       _vm._m(0),
       _vm._v(" "),
       _c("div", { staticClass: "control" }, [
@@ -28308,7 +28369,7 @@ var render = function() {
                 expression: "public"
               }
             ],
-            attrs: { type: "radio", name: "question" },
+            attrs: { type: "radio", name: "question", selected: "" },
             domProps: { value: 1, checked: _vm._q(_vm.public, 1) },
             on: {
               change: function($event) {

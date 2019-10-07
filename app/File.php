@@ -8,7 +8,7 @@ class File extends Model
 {
     //
     protected $fillable = [
-        'name',  'type', 'extension', 'user_id','public'
+        'name',  'type', 'extension', 'user_id','public','album','place'
     ];
 
 

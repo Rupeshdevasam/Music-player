@@ -131,6 +131,9 @@
 				numbering:'',
 				sound:{is_playing:false},
 				songs:this.$parent.$data.songs,
+				places:this.$parent.$data.places,
+
+
 				old:{active:''},
 				slider: "0",
         		songLength:"0",
@@ -240,7 +243,7 @@
 			}
 			catch(e)
 			{
-				//this.sound.stop();
+				this.sound.stop();
 				//console.log(this.slider);
 			}
 				
@@ -291,7 +294,7 @@
 				this.index=count;
 				this.numbering=this.index+1;
 				this.song=this.songs[this.index];
-				this.src=this.songs[this.index]+".mp3";
+				this.src='/gets/'+this.places[this.index]+'/'+this.songs[this.index]+".mp3";
 				this.loadSong();
 				//alert("eui");
 				
