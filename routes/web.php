@@ -11,16 +11,17 @@
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
-});
+})->name("dashboard");
 
 
-Route::get('/files/{id?}', 'FileController@index');
+//Route::get('/files/{id?}', 'FileController@index');
 
 Route::post('/files/add', 'FileController@store');
-Route::post('/files/edit/{id}', 'FileController@edit');
-Route::post('/files/delete/{id}', 'FileController@destroy');
+//Route::post('/files/edit/{id}', 'FileController@edit');
+//Route::post('/files/delete/{id}', 'FileController@destroy');
 
 
 Route::post('/all','FileController@getAll');
@@ -32,6 +33,11 @@ Route::get('/gets/{folder}/{song}',[ 'as' => 'audio','uses' => 'FileController@g
 Route::post('/getUser',function(){
 	return Auth::id();
 });
+
+Route::post('/authenticate','\App\Http\Controllers\Auth\LoginController@login');
+
+
+Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
 
 Auth::routes();

@@ -1,13 +1,18 @@
 <template>
-<div class="container">
+	<div>
+		<h1 class="title is-3 " style="color:red">Add a song</h1>
+<div class="container box">
+	
+ 
+
 <div class="field">
-  <label class="label" style="color:white">Name</label>
+  <label class="label" style="color:black">Name</label>
   <div class="control">
     <input class="input" type="file" ref="file" @change="handleFile" placeholder="Text input">
   </div>
 </div>
 <div class="field">
-  <label class="label" style="color:white">Album</label>
+  <label class="label" style="color:black">Album</label>
   <div class="control">
     <input class="input" type="text" :value="album" ref="album" @change="handleChange" placeholder="Text input">
   </div>
@@ -15,13 +20,13 @@
 
 
 <div class="field">
-	<label><strong style="color:white">Make it public?</strong></label>
+	<label><strong style="color:black">Make it public?</strong></label>
   <div class="control">
-    <label class="radio" style="color:white">
+    <label class="radio" style="color:black">
       <input type="radio" v-model="public" name="question" :value=1 selected>
       Yes
     </label>
-    <label class="radio" style="color:white">
+    <label class="radio" style="color:black">
       <input type="radio" v-model="public" name="question" :value=0>
       No
     </label>
@@ -35,6 +40,7 @@
   <div class="control">
     <button class="button is-danger" style="color:white">Cancel</button>
   </div>
+</div>
 </div>
 </div>
 </template>

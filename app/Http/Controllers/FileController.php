@@ -24,7 +24,7 @@ class FileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+       // $this->middleware('auth');
     }
 
     /**
@@ -65,12 +65,14 @@ class FileController extends Controller
 
     public function getAll()
     {
+    	//console.log("hii");
     	//return(storage_path());
     	return File::all();
     }
 
     public function getPublic()
     {
+    	$this->middleware('auth');
     	return Storage::files('public/all');
     }
 
@@ -86,6 +88,9 @@ class FileController extends Controller
 
 		
 }
+
+
+ 
 
     /**
      * Upload new file and store it

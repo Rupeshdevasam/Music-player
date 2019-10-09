@@ -2,10 +2,13 @@
       <div class="container">
         <ul>
          <router-link tag="li" exact to='/'>
-          <a style="color:black">Home</a>
+          <a style="color:red">Home</a>
         </router-link>
         <router-link tag="li" to='/create'>
-          <a style="color:white">Login</a>
+          <a style="color:red">Manage your account</a>
+        </router-link>
+         <router-link tag="li" to='/logout'>
+          <a style="color:red">Logout</a>
         </router-link>
         </ul>
       </div>

@@ -89,11 +89,25 @@
 		  </article>
 	  
 	</div>
-		<div class="container scrollbar" id="style-1">
-			<div v-for="song in songs" >
-				<song @songSelected="songs1" :src="src" ></song>
-				
+		<a class="button is-danger is-rounded fa" :class="{'fa-toggle-on':!album_toggle,'fa-toggle-off':album_toggle}" @click="album_toggle=!album_toggle;count=0;"></a>
+		<div class="container scrollbar" id="style-1" v-if="album_toggle">
+			
+			<div v-for="song in songs" v-if="album_toggle">
+				<song @songSelected="songs1" ></song>
 			</div>
+		</div>
+		<div class="container scrollbar" id="style-1" v-if="!album_toggle">
+			<ul>
+				<li>
+					<album :album="reset_album" @albumSelected="albumSelected"></album>
+				</li>
+				<li v-for="album in album_list">
+					
+					<album :album="album" @albumSelected="albumSelected"></album>
+
+				</li>
+		</ul>
+
 		</div>
 	</div>
 
@@ -108,12 +122,13 @@
  	import "./vue-custom-range-slider.scss";
  	import "./volume_slider.css";
  	import VolumeSlider from './VolumeSlider.vue';
-
+ 	import album from './album.vue';
 	export default{
 		components:{
 			Song,
 			Slider,
 			VolumeSlider,
+			album,
 			
 			
 		},
@@ -132,7 +147,7 @@
 				sound:{is_playing:false},
 				songs:this.$parent.$data.songs,
 				places:this.$parent.$data.places,
-
+				album_toggle:true,
 
 				old:{active:''},
 				slider: "0",
@@ -149,7 +164,15 @@
         		image:'',
         		md:'',
         		composer:'',
-        		album:''
+        		album:'',
+        		album_list:this.$parent.$data.album_list,
+        		reset_album:{
+        			images:["https://previews.123rf.com/images/aalbedouin/aalbedouin1709/aalbedouin170901245/85783425-music-albums-icon-.jpg"],
+        			name:"All songs",
+        			songs:this.$parent.$data.songs,
+        			places:this.$parent.$data.places,
+        		}
+        		
         		
 	      
 			};
@@ -158,6 +181,16 @@
 			changed(value) {
 				this.sound.seek(value);
 				this.timeRunner();
+			},
+			albumSelected(album)
+			{
+				//alert('ggg');
+				this.count=0;
+				this.index=0;
+				this.$parent.$data.count=0;
+				this.songs=album['songs'];
+				this.places=album['places'];
+				this.album_toggle=true;
 			},
 
 			search(word) {
@@ -403,7 +436,7 @@
 				this.slider="0";
 				this.$refs["range"].$refs["slider"].value="0";
 				this.sound=new Songs({
-											'src': './'+this.src,
+											'src':this.src,
 											autoplay: false,
 						  					loop: true,
 						  					volume: this.volumeValue,
@@ -439,6 +472,9 @@
 	
 <style> 
 	@import './Player.css';
+	li{
+display: inline;
+} 
 	.scrollbar {
     
     float: left;
@@ -449,6 +485,7 @@
     width:100%;
     overflow-y: scroll;
 }
+
 
 .force-overflow {
     min-height: 450px;

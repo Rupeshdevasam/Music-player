@@ -10,12 +10,17 @@ let routes=[
 	{
 		path:"/create",
 		component: require('./views/AddSong').default
+	},
+	{
+		path:"/logout",
+		component: require('./views/Logout').default
 	} 
 ];
 
 export default new VueRouter({
 
 		routes,
+
 
 		'linkActiveClass':'is-active'
 });
