@@ -12,9 +12,9 @@ use Redirect;
 
 class AuthController extends Controller
 {
-	public function authenticate(Request $request)
-	{
-		$credentials = $request->only('email', 'password');
+    public function authenticate(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
         //error_log($request['email']);
 		if (Auth::attempt($credentials)) {
             // Authentication passed...

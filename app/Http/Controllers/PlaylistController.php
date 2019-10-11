@@ -13,29 +13,29 @@ class PlaylistController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+    	$this->middleware('auth');
     }
 
     public function store(Request $request)
     {
 
-        $this->validate($request, [
-            'name' => 'required|unique:files',
-            'public' => 'required',
-            'song'	=> 'required',
-            'place' => 'required',
+    	$this->validate($request, [
+    		'name' => 'required|unique:files',
+    		'public' => 'required',
+    		'song'	=> 'required',
+    		'place' => 'required',
 
-        ]);
-         $model = new Playlist();
+    	]);
+    	$model = new Playlist();
 
-           return $model::create([
-            		'places' => $request['place'],
-                    'name' => $request['name'],
-                    'songs' => $request['song'],
-                    'public' => $request['public'],
-                    'user_id' => Auth::id()
+    	return $model::create([
+    		'places' => $request['place'],
+    		'name' => $request['name'],
+    		'songs' => $request['song'],
+    		'public' => $request['public'],
+    		'user_id' => Auth::id()
 
-                ]);
+    	]);
     }
 
     /**
@@ -47,15 +47,15 @@ class PlaylistController extends Controller
     public function edit(Request $request)
     {
     	$this->validate($request, [
-            'song' => 'required',
-            'place' => 'required',
-            'id' => 'required',
-        ]);
-        $list = Playlist::where('id', $request['id'])->where('user_id', Auth::id())->first();
-        
-           $list->songs =$list->songs.'*'.$request['song'];
-           $list->places =$list->places.'*'.$request['place'];
-           return response()->json($list->save());
+    		'song' => 'required',
+    		'place' => 'required',
+    		'id' => 'required',
+    	]);
+    	$list = Playlist::where('id', $request['id'])->where('user_id', Auth::id())->first();
+    	
+    	$list->songs =$list->songs.'*'.$request['song'];
+    	$list->places =$list->places.'*'.$request['place'];
+    	return response()->json($list->save());
 
     }
     public function getPlaylistsMini()
