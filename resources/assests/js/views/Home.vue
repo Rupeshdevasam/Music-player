@@ -1,112 +1,196 @@
 <template>
 	
 	<div class="container">
+	
 		<div class="columns">
+	
 			<div class="column">
 				
-				<player></player>
-				
+				<player></player>			
 				
 			</div>
+		
 		</div>
+	
 	</div>
 
 </template>
 
 <script>
-	import Song from '../components/Song.vue';
-	import Player from '../components/Player.vue';
-	import Vue from 'vue';
-	import * as MM from 'music-metadata-browser';
-	
-	export default{
-		components:{
-			Song,
-			Player
-		},
-		data()
+import Song from '../components/Song.vue';
+import Player from '../components/Player.vue';
+import Vue from 'vue';
+import * as MM from 'music-metadata-browser';
+
+export default{
+
+	components:{
+
+		Song,
+
+		Player
+
+	},
+
+	data()
+	{
+
+		return{
+
+			count:1,
+
+			songs:[],
+
+			places:[],
+
+			user:'',
+
+			album_list:{},
+
+			src:'',
+
+			playlists:[],
+
+		}
+
+	},
+	methods:{
+
+		loadSongs(data)
 		{
-			return{
-				count:1,
-				songs:[],
-				places:[],
-				user:'',
-				album_list:{},
-				src:'',
+
+			axios.post('/getUser').then(response => {
+		
+					   	this.user=response.data;
+					   	if(this.user!='')
+					   	{
+					   		this.initList();
+					   	}
+						data.forEach(this.trail); 
+						
+			});
+					
+		},
+	
+		trail(element) 
+		{
+
+			if( element['public'] == 1 || element['user_id'] == this.user )
+			{
+				this.songs.push(element['name']);
+				
+				this.places.push(element['place']);
+				
+				this.src='/gets/'+element['place']+'/'+element['name']+".mp3";
+				
+				this.imageLoader(this.src,element['place'],element['name'],element['album']);
+				
 			}
 		},
-		methods:{
-				loadSongs(data)
-				{
-					//alert(data);
-					axios.post('/getUser').then(response => {
-						   console.log(response.data);
-						   this.user=response.data;
-						   data.forEach(this.trail); 
-						  // alert(this.user)
-						});
-					
-				},
-				trail(element) {
-						
-						if(element['public']==1 || element['user_id']==this.user){
-						this.songs.push(element['name']);
-						this.places.push(element['place']);
-						this.src='/gets/'+element['place']+'/'+element['name']+".mp3";
-						this.imageLoader(this.src,element['place'],element['name']);
-					}
-						//temp+='/'+element['place']+'/'+element['name']+'.'+element['extension'];
-						//this.songs.push(temp);
-					},
-					async imageLoader(blob,place,song) {
-			 
-							await MM.fetchFromUrl(blob).then(metadata => {
-									  	this.md=metadata.common;
-						    	 var image="data:image/jpeg;base64,"+metadata.common.picture[0].data.toString('base64');
+		
+		async imageLoader(blob,place,song,album) 
+		{
 
-						    	// this.song=this.md.title;
+			await MM.fetchFromUrl(blob).then(metadata => {
+			 					
+			 					this.md=metadata.common;
+			 					
+			 					var image="data:image/jpeg;base64,"+metadata.common.picture[0].data.toString('base64');
 
-						    	// this.composer=this.md.composer[0];
-
-						    	// this.album=this.md.album;
-						    	var album=this.md.album;
-						    	//console.log(metadata);
+						    	if(album=="NULL")
+						    	{
+						    	
+						    		album=this.md.album;
+						    	
+						    	}
+						    	
 						    	this.genarateAlbums(song,album,image,place);
 
-
-						   }).catch({});
-							  // metadata has all the metadata found in the blob or file
-							 
-					},
-
-					genarateAlbums(song,album,image,place)
-					{
-						if(Object.keys(this.album_list).includes(album))
-						{
-							this.album_list[album]["songs"].push(song);
-							this.album_list[album]["places"].push(place);
-						}
-						else
-						{
-							//alert(album);
-
-							this.album_list[album]={};
-							this.album_list[album]["name"]=album;
-							this.album_list[album]["images"]=[];
-							this.album_list[album]["songs"]=[]
-							this.album_list[album]["places"]=[];
-							this.album_list[album]["images"].push(image);
-							this.album_list[album]["songs"].push(song);
-							this.album_list[album]["places"].push(place);
-						}
-					}
+						    }).catch({});
+							  
 		},
-		mounted(){
 
+		genarateAlbums(song,album,image,place)
+		{
+		
+			if(Object.keys(this.album_list).includes(album))
+			{
+		
+				this.album_list[album]["songs"].push(song);
+		
+				this.album_list[album]["places"].push(place);
+		
+			}
+			else
+			{
+		
+				this.album_list[album]={};
+		
+				this.album_list[album]["name"]=album;
+		
+				this.album_list[album]["images"]=[];
+		
+				this.album_list[album]["songs"]=[]
+		
+				this.album_list[album]["places"]=[];
+		
+				this.album_list[album]["images"].push(image);
+			
+				this.album_list[album]["songs"].push(song);
+			
+				this.album_list[album]["places"].push(place);
+			}
+
+		},
+				
+		initList()
+		{
+	
+			try{
+		
+					axios.post('/getPlaylists').then(response =>{
+		
+									(response.data).forEach(this.generateLists);
+
+					});
+		
+				}
+			catch(e)
+			{
+
+			}
+		},
+	
+		generateLists(element)
+		{
+			var temp={};
+		
+			temp['name']=element['name'];
+		
+			temp['songs']=element['songs'].split("*");
+		
+			temp['places']=element['places'].split("*");
+		
+			this.playlists.push(temp);
+		
+		},
+	},
+
+	mounted()
+	{
+		try{
 				axios.post('/all').then(response => {
 
-					this.loadSongs(response.data);
-					});
-				} 
-	};
+						this.loadSongs(response.data);
+					
+				});
+
+			}
+		catch(e){
+
+		};
+
+	}
+
+};
 </script>

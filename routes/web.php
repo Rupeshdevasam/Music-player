@@ -13,7 +13,7 @@
 
 
 Route::get('/', function () {
-    return view('welcome');
+	return view('welcome');
 })->name("dashboard");
 
 
@@ -38,6 +38,14 @@ Route::post('/authenticate','\App\Http\Controllers\Auth\LoginController@login');
 
 
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
+Route::get('/getPlay','PlaylistController@getPlaylistsMini');
+
+Route::post('getPlaylists','PlaylistController@getPlaylists');
+
+Route::post('/createList','PlaylistController@store');
+
+Route::post('/addToList','PlaylistController@edit');
 
 
 Auth::routes();

@@ -104,7 +104,9 @@ class FileController extends Controller
 
         $this->validate($request, [
             'name' => 'required|unique:files',
-            'file' => 'required|file|mimes:' . $all_ext . '|max:' . $max_size
+            'file' => 'required|file|mimes:' . $all_ext . '|max:' . $max_size,
+            'public' => 'required',
+            'album' => 'required'
         ]);
 
         $model = new File();
@@ -116,9 +118,6 @@ class FileController extends Controller
 
         if (Storage::putFileAs('/public/' . $this->getUserDir() . '/', $file, $request['name'] . '.' . $ext)) {
 
-        	
-        	Storage::putFileAs('/public/' . "all" . '/', $file, $request['name'] . '.' . $ext);
-        	info($place);
             return $model::create([
             		'place' => $place,
                     'name' => $request['name'],

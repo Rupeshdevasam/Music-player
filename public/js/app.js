@@ -2393,6 +2393,100 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _volume_slider_css__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_volume_slider_css__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _VolumeSlider_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./VolumeSlider.vue */ "./resources/assests/js/components/VolumeSlider.vue");
 /* harmony import */ var _album_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./album.vue */ "./resources/assests/js/components/album.vue");
+/* harmony import */ var _Playlist_vue__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Playlist.vue */ "./resources/assests/js/components/Playlist.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2511,7 +2605,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
- // import the styling, css or scss
+
 
 
 
@@ -2522,7 +2616,8 @@ __webpack_require__.r(__webpack_exports__);
     Song: _Song_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     Slider: (vue_custom_range_slider__WEBPACK_IMPORTED_MODULE_3___default()),
     VolumeSlider: _VolumeSlider_vue__WEBPACK_IMPORTED_MODULE_7__["default"],
-    album: _album_vue__WEBPACK_IMPORTED_MODULE_8__["default"]
+    album: _album_vue__WEBPACK_IMPORTED_MODULE_8__["default"],
+    playlist: _Playlist_vue__WEBPACK_IMPORTED_MODULE_9__["default"]
   },
 
   data() {
@@ -2543,6 +2638,7 @@ __webpack_require__.r(__webpack_exports__);
       songs: this.$parent.$data.songs,
       places: this.$parent.$data.places,
       album_toggle: true,
+      play_list: {},
       old: {
         active: ''
       },
@@ -2551,6 +2647,8 @@ __webpack_require__.r(__webpack_exports__);
       repeater: "",
       suffle: false,
       randomSong: 0,
+      temp_play: [],
+      user: "",
       time_count: {
         remaining: 0
       },
@@ -2563,11 +2661,12 @@ __webpack_require__.r(__webpack_exports__);
       album: '',
       album_list: this.$parent.$data.album_list,
       reset_album: {
-        images: ["https://previews.123rf.com/images/aalbedouin/aalbedouin1709/aalbedouin170901245/85783425-music-albums-icon-.jpg"],
+        images: ["https://previews.123rf.com/images/aalbedouin/	aalbedouin1709/aalbedouin170901245/85783425-music-albums-icon-.jpg"],
         name: "All songs",
         songs: this.$parent.$data.songs,
         places: this.$parent.$data.places
-      }
+      },
+      playlists: this.$parent.$data.playlists
     };
   },
 
@@ -2592,15 +2691,15 @@ __webpack_require__.r(__webpack_exports__);
     },
 
     async imageLoader(blob) {
-      // blob is a Web API Blob or File
+      this.album = "NA";
+      this.composer = "NA";
       await music_metadata_browser__WEBPACK_IMPORTED_MODULE_4__["fetchFromUrl"](blob).then(metadata => {
         this.md = metadata.common;
         this.image = "data:image/jpeg;base64," + metadata.common.picture[0].data.toString('base64');
         this.song = this.md.title;
         this.composer = this.md.composer[0];
         this.album = this.md.album;
-        console.log(metadata);
-      }).catch(); // metadata has all the metadata found in the blob or file
+      }).catch();
     },
 
     suffleToggle() {
@@ -2611,12 +2710,18 @@ __webpack_require__.r(__webpack_exports__);
 
     repeatToggle() {
       this.repeat = !this.repeat;
-      if (this.repeatOne) this.repeatOne = !this.repeatOne;
+
+      if (this.repeatOne) {
+        this.repeatOne = !this.repeatOne;
+      }
     },
 
     repeatOneToggle() {
       this.repeatOne = !this.repeatOne;
-      if (this.repeat) this.repeat = !this.repeat;
+
+      if (this.repeat) {
+        this.repeat = !this.repeat;
+      }
     },
 
     stop() {
@@ -2629,16 +2734,13 @@ __webpack_require__.r(__webpack_exports__);
     },
 
     timeRunner() {
-      //alert("hiii");
       this.running_time = this.sound.formatTime(parseInt(this.slider));
     },
 
     moveSeeker() {
-      //console.log(this.slider);
-      //this.timeRunner();
       try {
         this.$refs["range"].$refs["slider"].value = this.sound.seeks().toString();
-        this.slider = this.sound.seeks().toString(); //console.log(this.sound.seeks());
+        this.slider = this.sound.seeks().toString();
 
         if (!this.repeatOne) {
           if (parseInt(this.songLength) - parseInt(this.slider) <= 1) {
@@ -2649,7 +2751,7 @@ __webpack_require__.r(__webpack_exports__);
 
         this.timeRunner();
       } catch (e) {
-        this.sound.stop(); //console.log(this.slider);
+        this.sound.stop();
       }
     },
 
@@ -2658,18 +2760,9 @@ __webpack_require__.r(__webpack_exports__);
       this.volumeValue = value;
     },
 
-    selected() {},
-
     toggle() {
-      if (this.src != '') {//this.previous.sound.stop();
-      }
-
-      this.isPlaying = !this.isPlaying;
-
       if (!this.isPlaying) {
-        //	alert(this.src);
-        this.sound.play(); //alert("hii");
-
+        this.sound.play();
         this.repeater = setInterval(this.moveSeeker, 1000);
       } else if (this.src != '') {
         this.time_count.remaining = clearInterval(this.repeater);
@@ -2686,21 +2779,16 @@ __webpack_require__.r(__webpack_exports__);
       this.numbering = this.index + 1;
       this.song = this.songs[this.index];
       this.src = '/gets/' + this.places[this.index] + '/' + this.songs[this.index] + ".mp3";
-      this.loadSong(); //alert("eui");
-      //this.time=this.sound.duration();
+      this.loadSong();
 
       try {
         this.sound.play();
         this.isPlaying = false;
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) {}
     },
 
     previous() {
       try {
-        //alert(this.index-1);
-        //alert();
         if (this.suffle) {
           this.index = Math.floor(Math.random() * this.songs.length - 1 + 1);
 
@@ -2708,8 +2796,12 @@ __webpack_require__.r(__webpack_exports__);
             this.index = Math.floor(Math.random() * this.songs.length - 1 + 1);
           }
 
-          this.randomSong = this.song; //alert(this.index);
-        } else if (this.index - 1 < 0) this.index = this.$children.length;else this.index += this.$children.length - this.songs.length;
+          this.randomSong = this.song;
+        } else if (this.index - 1 < 0) {
+          this.index = this.$children.length;
+        } else {
+          this.index += this.$children.length - this.songs.length;
+        }
 
         this.$children[this.index - 1].selected();
         ;
@@ -2717,16 +2809,11 @@ __webpack_require__.r(__webpack_exports__);
     },
 
     next() {
-      //alert(this.$children.length-this.songs.length);
       try {
         if (this.suffle) {
           this.index = Math.floor(Math.random() * this.songs.length - 1);
-          console.log(this.index);
-          console.log(this.played);
-          console.log(this.index in this.played);
 
           while (this.played.includes(this.index)) {
-            //alert(this.index);
             this.index = Math.floor(Math.random() * this.songs.length - 1);
           }
 
@@ -2734,9 +2821,12 @@ __webpack_require__.r(__webpack_exports__);
           this.played.push(this.index);
 
           if (this.played.length == this.songs.length) {
-            //console.log(this.played);
-            this.played = []; //this.played.push(this.index);
+            this.played = [];
           }
+        } else if (this.songs.length == 1) {
+          this.sound.stop();
+          this.sound.play();
+          return;
         } else if (this.index > this.songs.length - 2) {
           this.$children[this.index - 1 + this.$children.length - this.songs.length + 1].reset();
           this.index = -1;
@@ -2749,8 +2839,7 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         this.$children[this.index + this.$children.length - this.songs.length + 1].selected();
-      } catch (e) {
-        console.log(e);
+      } catch (e) {//
       }
     },
 
@@ -2772,22 +2861,69 @@ __webpack_require__.r(__webpack_exports__);
         loop: true,
         volume: this.volumeValue
       });
-      this.imageLoader(this.src); //this.songLength=this.sound.duration();
-
+      this.imageLoader(this.src);
       this.repeater = setInterval(this.moveSeeker, 1000);
-      this.setTimes(); //this.sound.once('load',function(){
-      //});
-      //this.time=this.sound.duration();
-
-      try {} catch (e) {
-        console.log(e);
-      }
+      this.setTimes();
     }
 
   },
 
-  created() {}
+  mounted() {
+    axios.post('/getUser').then(response => {
+      this.user = response.data;
+    });
+  }
 
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assests/js/components/Playlist.vue":
+/*!****************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assests/js/components/Playlist.vue ***!
+  \****************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Song_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Song.vue */ "./resources/assests/js/components/Song.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['album'],
+  components: {
+    song: _Song_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+
+  data() {
+    return {
+      album_toggle: false
+    };
+  },
+
+  methods: {
+    selected() {
+      this.$emit('albumSelected', this.album);
+    }
+
+  }
 });
 
 /***/ }),
@@ -2846,6 +2982,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data() {
@@ -2853,13 +3024,60 @@ __webpack_require__.r(__webpack_exports__);
       count: ++this.$parent.$data.count,
       active: false,
       time: '',
-      song: ''
+      user: '',
+      song: '',
+      place: '',
+      playlists: [],
+      new_playlist: '',
+      toggle: false
     };
   },
 
   methods: {
+    options() {
+      this.toggle = !this.toggle;
+    },
+
+    listSelect(data) {
+      let formData = new FormData();
+      formData.append('song', this.song);
+      formData.append('place', this.place);
+      formData.append('id', data.id);
+      alert("Submitted");
+      axios.post('/addToList', formData, {
+        headers: {
+          'Content-Type': 'form-data'
+        }
+      }).then(function () {
+        console.log('SUCCESS!!');
+      }).catch(function () {
+        console.log('FAILURE!!');
+      });
+    },
+
+    createPlaylist() {
+      let formData = new FormData();
+      formData.append('name', this.new_playlist);
+      formData.append('public', 1);
+      formData.append('song', this.song);
+      formData.append('place', this.place);
+      alert("Submitted");
+      axios.post('/createList', formData, {
+        headers: {
+          'Content-Type': 'form-data'
+        }
+      }).then(function () {
+        console.log('SUCCESS!!');
+      }).catch(function () {
+        console.log('FAILURE!!');
+      });
+    },
+
     selected() {
-      if (this === this.$parent.$data.old) return;
+      if (this === this.$parent.$data.old) {
+        return;
+      }
+
       this.active = true;
       this.$emit('songSelected', this.count - 1);
       this.$parent.$data.old.active = false;
@@ -2868,12 +3086,26 @@ __webpack_require__.r(__webpack_exports__);
 
     reset() {
       this.active = false;
+    },
+
+    playlistsLoad() {
+      axios.get('/getPlay').then(response => {
+        this.playlists = response.data;
+      });
     }
 
   },
 
   created() {
+    axios.post('/getUser').then(response => {
+      this.user = response.data;
+
+      if (this.user != '') {
+        this.playlistsLoad();
+      }
+    });
     this.song = this.$parent.$data.songs[this.count - 1];
+    this.place = this.$parent.$data.places[this.count - 1];
   }
 
 });
@@ -2938,6 +3170,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 window.axios = axios__WEBPACK_IMPORTED_MODULE_0___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2945,19 +3215,24 @@ window.axios = axios__WEBPACK_IMPORTED_MODULE_0___default.a;
     return {
       file: 'ssss',
       public: 1,
-      album: 'NULL'
+      album: 'NULL',
+      is_danger: false,
+      message: '',
+      submitted_flag: false
     };
   },
 
   methods: {
     handleChange() {
-      //alert("message?: DOMString");
       this.album = this.$refs.album.value;
     },
 
     handleFile() {
-      alert("HII");
       this.file = this.$refs.file.files[0];
+    },
+
+    closeFlag() {
+      this.submitted_flag = false;
     },
 
     submitted() {
@@ -2969,19 +3244,26 @@ window.axios = axios__WEBPACK_IMPORTED_MODULE_0___default.a;
         names += this.file.name.charAt(i);
       }
 
-      console.log(names);
       formData.append('name', names);
       formData.append('public', this.public);
       formData.append('album', this.album);
-      alert("Submitted");
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/files/add', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-      }).then(function () {
+      }).then(response => {
+        this.album = 'NULL';
+        this.$refs.file.value = '';
+        this.submitted_flag = true;
+        this.message = "Uploaded";
+        this.is_danger = false;
+        setTimeout(this.closeFlag, 3000);
         console.log('SUCCESS!!');
-      }).catch(function () {
-        console.log('FAILURE!!');
+      }).catch(response => {
+        this.submitted_flag = true;
+        this.is_danger = true;
+        this.message = response;
+        setTimeout(this.closeFlag, 5000);
       });
     }
 
@@ -2999,6 +3281,14 @@ window.axios = axios__WEBPACK_IMPORTED_MODULE_0___default.a;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3071,6 +3361,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['album'],
@@ -3089,12 +3382,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit('albumSelected', this.album);
     }
 
-  },
-
-  mounted() {
-    console.log(this.album);
   }
-
 });
 
 /***/ }),
@@ -3109,6 +3397,25 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_SongUpload__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/SongUpload */ "./resources/assests/js/components/SongUpload.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3186,14 +3493,10 @@ __webpack_require__.r(__webpack_exports__);
   },
 
   mounted() {
-    //  location.reload();
     axios.post('/getUser').then(response => {
       console.log(response.data);
       this.user = response.data;
     }).catch();
-    {// location.reload();
-    }
-    ;
   }
 
 });
@@ -3230,6 +3533,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -3247,17 +3553,21 @@ __webpack_require__.r(__webpack_exports__);
       places: [],
       user: '',
       album_list: {},
-      src: ''
+      src: '',
+      playlists: []
     };
   },
 
   methods: {
     loadSongs(data) {
-      //alert(data);
       axios.post('/getUser').then(response => {
-        console.log(response.data);
         this.user = response.data;
-        data.forEach(this.trail); // alert(this.user)
+
+        if (this.user != '') {
+          this.initList();
+        }
+
+        data.forEach(this.trail);
       });
     },
 
@@ -3266,23 +3576,21 @@ __webpack_require__.r(__webpack_exports__);
         this.songs.push(element['name']);
         this.places.push(element['place']);
         this.src = '/gets/' + element['place'] + '/' + element['name'] + ".mp3";
-        this.imageLoader(this.src, element['place'], element['name']);
-      } //temp+='/'+element['place']+'/'+element['name']+'.'+element['extension'];
-      //this.songs.push(temp);
-
+        this.imageLoader(this.src, element['place'], element['name'], element['album']);
+      }
     },
 
-    async imageLoader(blob, place, song) {
+    async imageLoader(blob, place, song, album) {
       await music_metadata_browser__WEBPACK_IMPORTED_MODULE_3__["fetchFromUrl"](blob).then(metadata => {
         this.md = metadata.common;
-        var image = "data:image/jpeg;base64," + metadata.common.picture[0].data.toString('base64'); // this.song=this.md.title;
-        // this.composer=this.md.composer[0];
-        // this.album=this.md.album;
+        var image = "data:image/jpeg;base64," + metadata.common.picture[0].data.toString('base64');
 
-        var album = this.md.album; //console.log(metadata);
+        if (album == "NULL") {
+          album = this.md.album;
+        }
 
         this.genarateAlbums(song, album, image, place);
-      }).catch({}); // metadata has all the metadata found in the blob or file
+      }).catch({});
     },
 
     genarateAlbums(song, album, image, place) {
@@ -3290,7 +3598,6 @@ __webpack_require__.r(__webpack_exports__);
         this.album_list[album]["songs"].push(song);
         this.album_list[album]["places"].push(place);
       } else {
-        //alert(album);
         this.album_list[album] = {};
         this.album_list[album]["name"] = album;
         this.album_list[album]["images"] = [];
@@ -3300,14 +3607,34 @@ __webpack_require__.r(__webpack_exports__);
         this.album_list[album]["songs"].push(song);
         this.album_list[album]["places"].push(place);
       }
+    },
+
+    initList() {
+      try {
+        axios.post('/getPlaylists').then(response => {
+          response.data.forEach(this.generateLists);
+        });
+      } catch (e) {}
+    },
+
+    generateLists(element) {
+      var temp = {};
+      temp['name'] = element['name'];
+      temp['songs'] = element['songs'].split("*");
+      temp['places'] = element['places'].split("*");
+      this.playlists.push(temp);
     }
 
   },
 
   mounted() {
-    axios.post('/all').then(response => {
-      this.loadSongs(response.data);
-    });
+    try {
+      axios.post('/all').then(response => {
+        this.loadSongs(response.data);
+      });
+    } catch (e) {}
+
+    ;
   }
 
 });
@@ -3888,7 +4215,26 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 exports.i(__webpack_require__(/*! -!../../../../node_modules/css-loader!./Player.css */ "./node_modules/css-loader/index.js!./resources/assests/js/components/Player.css"), "");
 
 // module
-exports.push([module.i, "\nli{\ndisplay: inline;\n}\n.scrollbar {\n    \n    float: left;\n    height: 250px;\n    \n    margin-left: 22px;\n    margin-top: 40px;\n    width:100%;\n    overflow-y: scroll;\n}\n.force-overflow {\n    min-height: 450px;\n}\n#style-1::-webkit-scrollbar {\n    width: 6px;\n    background-color: #000000;\n}\n#style-1::-webkit-scrollbar-thumb {\n    background-color: red;\n}\n\t\n", ""]);
+exports.push([module.i, "\nli{\n\tdisplay: inline;\n}\n.scrollbar {\n\n\tfloat: left;\n\theight: 250px;\n\n\tmargin-left: 22px;\n\twidth:100%;\n\toverflow-y: scroll;\n\toverflow-x: none;\n}\n.scrollbar1 {\n\n\tfloat: left;\n\theight: 550px;\n\n\tmargin-left: 22px;\n\n\twidth:100%;\n\toverflow: none;\n}\n.force-overflow {\n\tmin-height: 450px;\n}\n#style-1::-webkit-scrollbar {\n\twidth: 6px;\n\tbackground-color: #000000;\n}\n#style-1::-webkit-scrollbar-thumb {\n\tbackground-color: darkred;\n}\ndiv.scrollmenu {\n\tbackground-color: #333;\n\toverflow: auto;\n\twhite-space: nowrap;\n}\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"optionsId\":\"0\",\"vue\":true,\"scoped\":false,\"sourceMap\":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assests/js/components/Playlist.vue":
+/*!*********************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/style-compiler?{"optionsId":"0","vue":true,"scoped":false,"sourceMap":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assests/js/components/Playlist.vue ***!
+  \*********************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.album-wrapper {\n  margin: 12px;\n}\n.album {\n  width: 180px;\n  padding: 5px;\n  cursor: pointer;\n  margin: 10px 0 5px 0;\n  display: inline-block;\n  box-sizing: border-box;\n  text-align: center;\n  transition: transform 0.3s ease-in-out;\n  overflow: hidden;\n.album-image {\n    display: inline-block;\n    width: 156px;\n    height: 156px;\n    margin: 0 auto;\n    border-radius: 4px;\n    object-fit: cover;\n&[src=\"\"] {\n      background-color: @color-background-transparent;\n}\n}\n}\n.name {\n  display: block;\n  width: 156px;\n  font-size: 16px;\n  max-height: 40px;\n  overflow: hidden;\n  margin: 0 auto;\n  color:red;\n}\n.album:hover {\n  transform: scale3d(1.05, 1.05, 1);\n}\n", ""]);
 
 // exports
 
@@ -3907,7 +4253,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 exports.i(__webpack_require__(/*! -!../../../../node_modules/css-loader!./song.css */ "./node_modules/css-loader/index.js!./resources/assests/js/components/song.css"), "");
 
 // module
-exports.push([module.i, "\n\n\n\n", ""]);
+exports.push([module.i, "\n.dropdown-content {\n\tmax-height: 10em;\n\toverflow: auto;\n}\n\n\n", ""]);
 
 // exports
 
@@ -3945,7 +4291,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.album-wrapper {\n  margin: 12px;\n}\n.album {\n  width: 180px;\n  padding: 5px;\n  cursor: pointer;\n  margin: 10px 0 5px 0;\n  display: inline-block;\n  box-sizing: border-box;\n  text-align: center;\n  transition: transform 0.3s ease-in-out;\n  overflow: hidden;\n.album-image {\n    display: inline-block;\n    width: 156px;\n    height: 156px;\n    margin: 0 auto;\n    border-radius: 4px;\n    object-fit: cover;\n&[src=\"\"] {\n      background-color: @color-background-transparent;\n}\n}\n}\n.name {\n    display: block;\n    width: 156px;\n    font-size: 16px;\n    max-height: 40px;\n    overflow: hidden;\n    margin: 0 auto;\n    color:red;\n}\n.album:hover {\n    transform: scale3d(1.05, 1.05, 1);\n}\n", ""]);
+exports.push([module.i, "\n.album-wrapper {\n  margin: 12px;\n}\n.album {\n  width: 180px;\n  \n  padding: 5px;\n  \n  cursor: pointer;\n  \n  margin: 10px 0 5px 0;\n  \n  display: inline-block;\n  \n  box-sizing: border-box;\n  \n  text-align: center;\n  \n  transition: transform 0.3s ease-in-out;\n  \n  overflow: hidden;\n.album-image {\n    display: inline-block;\n  \n    width: 156px;\n  \n    height: 156px;\n  \n    margin: 0 auto;\n  \n    border-radius: 4px;\n  \n    object-fit: cover;\n&[src=\"\"] {\n\n      background-color: @color-background-transparent;\n}\n}\n}\n.name {\n\n    display: block;\n\n    width: 156px;\n\n    font-size: 16px;\n\n    max-height: 40px;\n\n    overflow: hidden;\n\n    margin: 0 auto;\n\n    color:red;\n}\n.album:hover {\n\n    transform: scale3d(1.05, 1.05, 1);\n}\n\n", ""]);
 
 // exports
 
@@ -3964,7 +4310,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "p{\n\t\tdisplay:inline-block;\n\t\tpadding-left: 10%;\n\t}\n\t.p_active{\n\t\tpadding-left: 2%;\n\n\t}\n\t.name{\n\t\tdisplay:inline-block;\n\t\tpadding-left: 1%;\n\t}\n\t.normal{\n\t\theight: 40px;\n\t\tpadding: 1%;\n\t\tbackground: #FDF5E6;\n\t\tcolor:black;\n\t\tmargin-bottom: 10px;\n\t}\n\t.active{\n\t\theight: 500px;\n\t\tbackground: black;\n\t\tborder: 5px inline red;\n\t\tbox-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);\n\t\tmargin-bottom: 50px;\n\n\t}\n\t.index{\n\t\tfloat:left;\n\t\tposition: absolute;\n\t\tleft:2%;\n\t}\n\t.normal:hover{\n\t\tcursor: pointer;\n\t\t\n\t\tbox-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);\n\t}\n\tbutton{\n\t\tbackground:white;\n\t\tcolor:red;\n\t\tdisplay: inline-block;\n\t\tborder-color: white;\n\t\tborder-radius: 50%;\n\t\tpadding: 50px;\n\t\tborder-style: solid;\n\t}", ""]);
+exports.push([module.i, "p{\n\t\tdisplay:inline-block;\n\n\t\tpadding-left: 10%;\n\n\t}\n\n\t.p_active{\n\n\t\tpadding-left: 2%;\n\n\t}\n\n\t.name{\n\n\t\tdisplay:inline-block;\n\n\t\tpadding-left: 1%;\n\n\t}\n\n\t.normal{\n\n\t\theight: 40px;\n\n\t\tpadding: 1%;\n\n\t\tbackground: #FDF5E6;\n\n\t\tcolor:black;\n\n\t\tmargin-bottom: 10px;\n\n\t}\n\n\t.active{\n\n\t\theight: 500px;\n\n\t\tbackground: black;\n\n\t\tborder: 5px inline red;\n\n\t\tbox-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);\n\n\t\tmargin-bottom: 50px;\n\n\t}\n\n\t.index{\n\n\t\tfloat:left;\n\n\t\tposition: absolute;\n\t\t\n\t\tleft:2%;\n\n\t}\n\n\t.normal:hover{\n\n\t\tcursor: pointer;\n\n\t\tbox-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);\n\n\t}\n\n\tbutton{\n\n\t\tbackground:white;\n\n\t\tcolor:red;\n\n\t\tdisplay: inline-block;\n\t\tborder-color: white;\n\n\t\tborder-radius: 50%;\n\n\t\tpadding: 50px;\n\n\n\t\tborder-style: solid;\n\n\t}", ""]);
 
 // exports
 
@@ -3983,7 +4329,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\t.normal{\n\t\theight: 40px;\n\t\tpadding: 1%;\n\t\tbackground: #FDF5E6;\n\t\tcolor:black;\n\t\t\n\t}\n\t.actives{\n\t\theight: 40px;\n\t\tpadding: 1%;\n\t\tcolor:white;\n\t\tbackground: #9f6934;\n\t\t\n\t\tmargin-bottom: 10px;\n\t}\n\t.fontWhite\n\t{\n\t\tcolor:white;\n\t}\n\t.index{\n\t\tfloat:left;\n\t\tposition: absolute;\n\t\tleft:2%;\n\t}\n\t.normal:hover{\n\t\tcursor: pointer;\n\t\t\n\t\tbox-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);\n\t}\n\tbutton{\n\t\tbackground:white;\n\t\tcolor:red;\n\t\tdisplay: inline-block;\n\t\tborder-color: white;\n\t\tborder-radius: 50%;\n\t\tpadding: 50px;\n\t\tborder-style: solid;\n\t}", ""]);
+exports.push([module.i, ".normal{\n\t\theight: 40px;\n\t\tpadding: 1%;\n\t\tbackground: #FDF5E6;\n\t\tcolor:black;\n\t\t\n}\n\n.actives{\n\t\theight: 40px;\n\t\tpadding: 1%;\n\t\tcolor:white;\n\t\tbackground: #9f6934;\n\t\t\n\t\tmargin-bottom: 10px;\n}\n\n.fontWhite\t{\n\t\tcolor:white;\n}\n\n.index{\n\t\tfloat:left;\n\t\tposition: absolute;\n\t\tleft:2%;\n}\n\n.normal:hover{\n\t\tcursor: pointer;\n\t\t\n\t\tbox-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);\n}\n\nbutton{\n\t\tbackground:white;\n\t\tcolor:red;\n\t\tdisplay: inline-block;\n\t\tborder-color: white;\n\t\tborder-radius: 50%;\n\t\tpadding: 50px;\n\t\tborder-style: solid;\n}", ""]);
 
 // exports
 
@@ -4002,7 +4348,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".volume {\n  -webkit-appearance: none;\n  width: 100%;\n  height: 2px;\n  border-radius: 5px;  \n  background-image: linear-gradient(to right,lightgreen 30%, red 100%);\n  outline: none;\n  opacity: 0.7;\n  cursor:pointer;\n  -webkit-transition: .2s;\n  transition: opacity .2s;\n\n&::-webkit-volume-thumb {\n  box-shadow: 1px 1px 1px #000000;\n  border: 1px solid #000000;\n  height: 27px;\n  width: 19px;\n  border-radius: 7px;\n  background: #FFFFFF;\n  cursor: pointer;\n  -webkit-appearance: none;\n  margin-top: -9.5px;\n}\n\n&::-moz-range-thumb {\n  width: 25px;\n  height: 25px;\n  border-radius: 50%;\n  background: #4CAF50;\n  cursor: pointer;\n}\n}", ""]);
+exports.push([module.i, ".volume {\n  -webkit-appearance: none;\n  width: 100%;\n  height: 2px;\n  border-radius: 5px;  \n  background-image: linear-gradient(to right,lightgreen 30%, red 100%);\n  outline: none;\n  opacity: 0.7;\n  cursor:pointer;\n  -webkit-transition: .2s;\n  transition: opacity .2s;\n\n  &::-webkit-volume-thumb {\n    box-shadow: 1px 1px 1px #000000;\n    border: 1px solid #000000;\n    height: 27px;\n    width: 19px;\n    border-radius: 7px;\n    background: #FFFFFF;\n    cursor: pointer;\n    -webkit-appearance: none;\n    margin-top: -9.5px;\n  }\n\n  &::-moz-range-thumb {\n    width: 25px;\n    height: 25px;\n    border-radius: 50%;\n    background: #4CAF50;\n    cursor: pointer;\n  }\n}", ""]);
 
 // exports
 
@@ -4021,7 +4367,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".volume {\n  -webkit-appearance: none;\n  width: 100%;\n  height: 2px;\n  border-radius: 5px;  \n  background-image: linear-gradient(to right,lightgreen 30%, red 100%);\n  outline: none;\n  opacity: 0.7;\n  cursor:pointer;\n  transition: opacity .2s;\n\n&::-webkit-volume-thumb {\n  box-shadow: 1px 1px 1px #000000;\n  border: 1px solid #000000;\n  height: 27px;\n  width: 19px;\n  border-radius: 7px;\n  background: #FFFFFF;\n  cursor: pointer;\n  -webkit-appearance: none;\n  margin-top: -9.5px;\n}\n\n&::-moz-range-thumb {\n  width: 25px;\n  height: 25px;\n  border-radius: 50%;\n  background: #4CAF50;\n  cursor: pointer;\n}\n}", ""]);
+exports.push([module.i, ".volume {\n  -webkit-appearance: none;\n  width: 100%;\n  height: 2px;\n  border-radius: 5px;  \n  background-image: linear-gradient(to right,lightgreen 30%, red 100%);\n  outline: none;\n  opacity: 0.7;\n  cursor:pointer;\n  transition: opacity .2s;\n\n  &::-webkit-volume-thumb {\n    box-shadow: 1px 1px 1px #000000;\n    border: 1px solid #000000;\n    height: 27px;\n    width: 19px;\n    border-radius: 7px;\n    background: #FFFFFF;\n    cursor: pointer;\n    -webkit-appearance: none;\n    margin-top: -9.5px;\n  }\n\n  &::-moz-range-thumb {\n    width: 25px;\n    height: 25px;\n    border-radius: 50%;\n    background: #4CAF50;\n    cursor: pointer;\n  }\n}", ""]);
 
 // exports
 
@@ -28547,6 +28893,52 @@ if (false) {}
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-1af6bb3e\",\"hasScoped\":false,\"optionsId\":\"0\",\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assests/js/components/Playlist.vue":
+/*!***********************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-1af6bb3e","hasScoped":false,"optionsId":"0","buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assests/js/components/Playlist.vue ***!
+  \***********************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "album-wrapper",
+      staticStyle: { display: "inline-block" },
+      on: { click: _vm.selected }
+    },
+    [
+      _c("div", { class: "album", staticStyle: { background: "black" } }, [
+        _c("img", {
+          staticClass: "\n      album-image",
+          attrs: {
+            src:
+              "https://www.clipartwiki.com/clipimg/full/203-2033257_song-clipart-music-program-art-music-png.png"
+          }
+        }),
+        _vm._v(" "),
+        _c("h2", { staticClass: "name", staticStyle: { color: "red" } }, [
+          _vm._v(_vm._s(_vm.album["name"]))
+        ])
+      ])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+if (false) {}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-26d02de2\",\"hasScoped\":false,\"optionsId\":\"0\",\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assests/js/components/SongUpload.vue":
 /*!*************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-26d02de2","hasScoped":false,"optionsId":"0","buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assests/js/components/SongUpload.vue ***!
@@ -28590,11 +28982,26 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "control" }, [
           _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.album,
+                expression: "album"
+              }
+            ],
             ref: "album",
             staticClass: "input",
             attrs: { type: "text", placeholder: "Text input" },
             domProps: { value: _vm.album },
-            on: { change: _vm.handleChange }
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.album = $event.target.value
+              }
+            }
           })
         ])
       ]),
@@ -28624,7 +29031,7 @@ var render = function() {
                   }
                 }
               }),
-              _vm._v("\n      Yes\n    ")
+              _vm._v("\n\t\t\n\t\t\t\t\tYes\n\t\t\n\t\t\t\t")
             ]
           ),
           _vm._v(" "),
@@ -28649,7 +29056,7 @@ var render = function() {
                   }
                 }
               }),
-              _vm._v("\n      No\n    ")
+              _vm._v("\n\t\t\n\t\t\t\t\tNo\n\t\t\n\t\t\t\t")
             ]
           )
         ])
@@ -28666,7 +29073,18 @@ var render = function() {
         _vm._v(" "),
         _vm._m(1)
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _vm.submitted_flag
+      ? _c(
+          "div",
+          {
+            staticClass: "notification is-success",
+            class: { "is-success": !_vm.is_danger, "is-danger": _vm.is_danger }
+          },
+          [_c("strong", [_vm._v(_vm._s(_vm.message))])]
+        )
+      : _vm._e()
   ])
 }
 var staticRenderFns = [
@@ -28863,8 +29281,7 @@ var render = function() {
             border: "2px solid #9f6934",
             "margin-top": "5%"
           },
-          attrs: { id: _vm.count },
-          on: { click: _vm.selected }
+          attrs: { id: _vm.count }
         },
         [
           _c("article", { staticClass: "media" }, [
@@ -28945,9 +29362,9 @@ var render = function() {
                         [
                           _c("marquee", { staticStyle: { color: "red" } }, [
                             _vm._v(
-                              "\n\t          \t\t " +
+                              "\n\n\t\t\t\t\t\t\t\t" +
                                 _vm._s(_vm.song) +
-                                "\n\t          \t"
+                                "\n\n\t\t\t\t\t\t\t"
                             )
                           ])
                         ],
@@ -28965,9 +29382,9 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        "\n\t        \t" +
+                        "\n\n\t\t\t\t\t\t" +
                           _vm._s(_vm.total_time) +
-                          "\n\t        "
+                          "\n\n\t\t\t\t\t"
                       )
                     ]
                   )
@@ -29053,7 +29470,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("p", { staticStyle: { float: "left" } }, [
                     _c("strong", { staticStyle: { color: "red" } }, [
-                      _vm._v("Album: \n\t\t\t\t\t"),
+                      _vm._v("Album: \n\t\t\t\t\t\n\t\t\t\t\t\t\t"),
                       _c(
                         "a",
                         {
@@ -29073,14 +29490,14 @@ var render = function() {
                                 "text-decoration": "underline"
                               }
                             },
-                            [_vm._v(" " + _vm._s(_vm.album))]
+                            [_vm._v("\n\t\t\t\t\t\t\t\t " + _vm._s(_vm.album))]
                           )
                         ]
                       )
                     ]),
                     _vm._v(" "),
                     _c("strong", { staticStyle: { color: "red" } }, [
-                      _vm._v("Director: \n\t\t\t\t\t"),
+                      _vm._v("Director: \n\t\t\t\t\t\t\n\t\t\t\t\t\t\t"),
                       _c(
                         "a",
                         {
@@ -29102,7 +29519,9 @@ var render = function() {
                             },
                             [
                               _vm._v(
-                                " " + _vm._s(_vm.composer) + "\n\t\t\t\t\t\t"
+                                "\n\n\t\t\t\t\t\t\t\t " +
+                                  _vm._s(_vm.composer) +
+                                  "\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t"
                               )
                             ]
                           )
@@ -29117,19 +29536,22 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c("a", {
-        staticClass: "button is-danger is-rounded fa",
-        class: {
-          "fa-toggle-on": !_vm.album_toggle,
-          "fa-toggle-off": _vm.album_toggle
-        },
-        on: {
-          click: function($event) {
-            _vm.album_toggle = !_vm.album_toggle
-            _vm.count = 0
+      _c("div", [
+        _c("a", {
+          staticClass: "button is-danger is-rounded fa",
+          class: {
+            "fa-toggle-on": !_vm.album_toggle,
+            "fa-toggle-off": _vm.album_toggle
+          },
+          staticStyle: { "margin-bottom": "10px" },
+          on: {
+            click: function($event) {
+              _vm.album_toggle = !_vm.album_toggle
+              _vm.count = 0
+            }
           }
-        }
-      }),
+        })
+      ]),
       _vm._v(" "),
       _vm.album_toggle
         ? _c(
@@ -29151,44 +29573,126 @@ var render = function() {
       !_vm.album_toggle
         ? _c(
             "div",
-            { staticClass: "container scrollbar", attrs: { id: "style-1" } },
+            { staticClass: "container scrollbar1", attrs: { id: "style-1" } },
             [
-              _c(
-                "ul",
-                [
-                  _c(
-                    "li",
+              !_vm.album_toggle
+                ? _c(
+                    "h1",
+                    {
+                      staticClass: "title is-3",
+                      staticStyle: { "text-align": "center", color: "darkred" }
+                    },
+                    [_vm._v("ALBUMS")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.album_toggle
+                ? _c(
+                    "div",
+                    {
+                      staticClass: "container scrollbar",
+                      attrs: { id: "style-1" }
+                    },
                     [
-                      _c("album", {
-                        attrs: { album: _vm.reset_album },
-                        on: { albumSelected: _vm.albumSelected }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _vm._l(_vm.album_list, function(album) {
-                    return _c(
-                      "li",
-                      [
-                        _c("album", {
-                          attrs: { album: album },
-                          on: { albumSelected: _vm.albumSelected }
-                        })
-                      ],
-                      1
-                    )
-                  })
-                ],
-                2
-              )
+                      _c(
+                        "ul",
+                        [
+                          _c(
+                            "li",
+                            [
+                              _c("album", {
+                                attrs: { album: _vm.reset_album },
+                                on: { albumSelected: _vm.albumSelected }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _vm._l(_vm.album_list, function(album) {
+                            return _c(
+                              "li",
+                              [
+                                _c("album", {
+                                  attrs: { album: album },
+                                  on: { albumSelected: _vm.albumSelected }
+                                })
+                              ],
+                              1
+                            )
+                          })
+                        ],
+                        2
+                      )
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.album_toggle
+                ? _c(
+                    "h1",
+                    {
+                      staticClass: "title is-3",
+                      staticStyle: { "text-align": "center", color: "darkred" }
+                    },
+                    [_vm._v("Playlists")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.user == ""
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "button is-primary",
+                      staticStyle: { position: "relative", left: "40%" },
+                      attrs: { href: "/login" }
+                    },
+                    [_vm._m(0)]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.album_toggle && _vm.user != ""
+                ? _c(
+                    "div",
+                    {
+                      staticClass: "container scrollbar",
+                      attrs: { id: "style-1" }
+                    },
+                    [
+                      _c(
+                        "ul",
+                        _vm._l(_vm.playlists, function(item) {
+                          return _c(
+                            "li",
+                            [
+                              _c("playlist", {
+                                attrs: { album: item },
+                                on: { albumSelected: _vm.albumSelected }
+                              })
+                            ],
+                            1
+                          )
+                        }),
+                        0
+                      )
+                    ]
+                  )
+                : _vm._e()
             ]
           )
         : _vm._e()
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("b", [_vm._v("Please to login to access playlists")])
+    ])
+  }
+]
 render._withStripped = true
 
 if (false) {}
@@ -29215,14 +29719,17 @@ var render = function() {
     {
       staticClass: "box",
       class: { actives: _vm.active, normal: !_vm.active },
-      attrs: { id: _vm.count },
-      on: { click: _vm.selected }
+      attrs: { id: _vm.count }
     },
     [
       _c("article", { staticClass: "media" }, [
         _c(
           "div",
-          { staticClass: "media-content", staticStyle: { display: "inline" } },
+          {
+            staticClass: "media-content",
+            staticStyle: { display: "inline" },
+            on: { click: _vm.selected }
+          },
           [
             _c("div", { staticClass: "content" }, [
               _c(
@@ -29234,24 +29741,153 @@ var render = function() {
               _c("p", { staticStyle: { float: "left" } }, [
                 _c("strong", { class: { fontWhite: _vm.active } }, [
                   _vm._v(
-                    "\n\t    \n\t          \n\t    \n\t          \t\t" +
+                    "\n\n\n\n\t\t\t\t\t\t" +
                       _vm._s(_vm.song) +
-                      "\n\t    \n\t          \n\t    \n\t           "
+                      "\n\n\n\n\t\t\t\t\t"
                   )
                 ]),
                 _vm._v(" "),
                 _c("br")
-              ]),
-              _vm._v(" "),
-              _c("p", { staticStyle: { float: "right" } })
+              ])
             ])
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "dropdown is-right",
+            class: { "is-active": _vm.toggle },
+            staticStyle: { display: "inline" }
+          },
+          [
+            _c("div", { staticClass: "dropdown-trigger" }, [
+              _c("span", { staticClass: "icon is-small" }, [
+                _c("i", {
+                  staticClass: "fa",
+                  class: { "fa-plus": !_vm.toggle, "fa-times": _vm.toggle },
+                  staticStyle: { color: "darkred" },
+                  attrs: {
+                    "aria-haspopup": "true",
+                    "aria-controls": "dropdown-menu",
+                    "aria-hidden": "true"
+                  },
+                  on: { click: _vm.options }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "dropdown-menu",
+                attrs: { id: "dropdown-menu", role: "menu" }
+              },
+              [
+                _c(
+                  "div",
+                  { staticClass: "dropdown-content" },
+                  [
+                    _vm._l(_vm.playlists, function(item) {
+                      return _vm.user != ""
+                        ? _c(
+                            "a",
+                            {
+                              staticClass: "dropdown-item",
+                              attrs: { href: "#" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.listSelect(item)
+                                }
+                              }
+                            },
+                            [
+                              _c("span", [
+                                _vm._v("Add to "),
+                                _c("b", [_vm._v(" " + _vm._s(item.name))])
+                              ]),
+                              _vm._v(" "),
+                              _c("hr", { staticClass: "dropdown-divider" })
+                            ]
+                          )
+                        : _vm._e()
+                    }),
+                    _vm._v(" "),
+                    _vm.user != ""
+                      ? _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.new_playlist,
+                              expression: "new_playlist"
+                            }
+                          ],
+                          staticClass: "dropdown-item",
+                          staticStyle: { margin: "10px" },
+                          attrs: {
+                            href: "#",
+                            placeholder: "Create a new playlist"
+                          },
+                          domProps: { value: _vm.new_playlist },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.new_playlist = $event.target.value
+                            }
+                          }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.user != ""
+                      ? _c(
+                          "a",
+                          {
+                            staticClass: "button is-primary",
+                            staticStyle: {
+                              position: "relative",
+                              left: "35%",
+                              "z-index": "30"
+                            },
+                            on: { click: _vm.createPlaylist }
+                          },
+                          [_vm._v("Create and Add")]
+                        )
+                      : _c(
+                          "a",
+                          {
+                            staticClass: "dropdown-item",
+                            attrs: { href: "/login" }
+                          },
+                          [
+                            _vm._m(0),
+                            _vm._v(" "),
+                            _c("hr", { staticClass: "dropdown-divider" })
+                          ]
+                        )
+                  ],
+                  2
+                )
+              ]
+            )
           ]
         )
       ])
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("b", [_vm._v("Please to login to access playlists")])
+    ])
+  }
+]
 render._withStripped = true
 
 if (false) {}
@@ -32221,6 +32857,27 @@ if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var add = __webpack_require__(/*! ../../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
 var update = add("eabafd36", content, false, {});
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"optionsId\":\"0\",\"vue\":true,\"scoped\":false,\"sourceMap\":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assests/js/components/Playlist.vue":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/style-compiler?{"optionsId":"0","vue":true,"scoped":false,"sourceMap":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assests/js/components/Playlist.vue ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader!../../../../node_modules/vue-loader/lib/style-compiler?{"optionsId":"0","vue":true,"scoped":false,"sourceMap":false}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Playlist.vue */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"optionsId\":\"0\",\"vue\":true,\"scoped\":false,\"sourceMap\":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assests/js/components/Playlist.vue");
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__(/*! ../../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
+var update = add("2d14d585", content, false, {});
 // Hot Module Replacement
 if(false) {}
 
@@ -44646,6 +45303,56 @@ if (false) {}
 
 /***/ }),
 
+/***/ "./resources/assests/js/components/Playlist.vue":
+/*!******************************************************!*\
+  !*** ./resources/assests/js/components/Playlist.vue ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Playlist_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !babel-loader!../../../../node_modules/vue-loader/lib/selector?type=script&index=0!./Playlist.vue */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assests/js/components/Playlist.vue");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_template_compiler_index_id_data_v_1af6bb3e_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Playlist_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-1af6bb3e","hasScoped":false,"optionsId":"0","buble":{"transforms":{}}}!../../../../node_modules/vue-loader/lib/selector?type=template&index=0!./Playlist.vue */ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-1af6bb3e\",\"hasScoped\":false,\"optionsId\":\"0\",\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assests/js/components/Playlist.vue");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_component_normalizer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/component-normalizer */ "./node_modules/vue-loader/lib/runtime/component-normalizer.js");
+var disposed = false
+function injectStyle (context) {
+  if (disposed) return
+  __webpack_require__(/*! !vue-style-loader!css-loader!../../../../node_modules/vue-loader/lib/style-compiler/index?{"optionsId":"0","vue":true,"scoped":false,"sourceMap":false}!../../../../node_modules/vue-loader/lib/selector?type=styles&index=0!./Playlist.vue */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"optionsId\":\"0\",\"vue\":true,\"scoped\":false,\"sourceMap\":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assests/js/components/Playlist.vue")
+}
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+
+var Component = Object(_node_modules_vue_loader_lib_runtime_component_normalizer__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Playlist_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+  _node_modules_vue_loader_lib_template_compiler_index_id_data_v_1af6bb3e_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Playlist_vue__WEBPACK_IMPORTED_MODULE_1__["render"],
+  _node_modules_vue_loader_lib_template_compiler_index_id_data_v_1af6bb3e_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Playlist_vue__WEBPACK_IMPORTED_MODULE_1__["staticRenderFns"],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assests/js/components/Playlist.vue"
+
+/* hot reload */
+if (false) {}
+
+/* harmony default export */ __webpack_exports__["default"] = (Component.exports);
+
+
+/***/ }),
+
 /***/ "./resources/assests/js/components/Song.vue":
 /*!**************************************************!*\
   !*** ./resources/assests/js/components/Song.vue ***!
@@ -44766,24 +45473,15 @@ function () {
     this.timer = 0;
     this.is_playing = true;
     this.repeatOne = false;
-    this.src = data['src']; //console.log(data);
-
+    this.src = data['src'];
     this.sound = new Howl({
       src: ['./' + data['src']],
       autoplay: false,
       loop: true,
       volume: data['volume'],
       onload: function () {
-        this.timer = this.timerCount(); //alert(this.timer);
-      }.bind(this),
-      onplay: function onplay() {//alert("playing");
-        //this.playing();
-        //this.is_playing=true;
-        //alert(this.is_playing);
-      },
-      onend: function onend() {//alert("hiii");
-        //this.sound.pause();
-      }
+        this.timer = this.timerCount();
+      }.bind(this)
     });
   }
 
@@ -44808,8 +45506,7 @@ function () {
     value: function timerCount() {
       var time = 0;
       var time_in_seconds = this.sound.duration();
-      time = this.formatTime(time_in_seconds); //console.log(time);
-
+      time = this.formatTime(time_in_seconds);
       return [time, time_in_seconds.toString()];
     }
   }, {

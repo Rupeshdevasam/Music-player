@@ -9,13 +9,18 @@ var v=new Vue({
 	
 
 	data:{
+	
 		playing:false
+	
 	},
+	
 	/**
 	 * Binded Element(ID) 
 	 * @type {String}
 	 */
-	el:'#root',
-	router,
 	
+	 el:'#root',
+	
+	 router,
+
 });
