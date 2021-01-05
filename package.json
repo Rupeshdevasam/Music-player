@@ -12,7 +12,7 @@
     "devDependencies": {
         "@babel/core": "^7.6.2",
         "@babel/preset-env": "^7.6.2",
-        "axios": "^0.19",
+        "axios": "^0.21",
         "babel-loader": "^8.0.6",
         "bootstrap": "^4.0.0",
         "compass": "^0.1.1",
